@@ -22,9 +22,9 @@ use LaraCrafts\UrlShortener\Http\TinyUrlShortener;
  */
 class UrlShortenerManager implements FactoryContract
 {
-    protected $app;
-    protected $customCreators;
-    protected $shorteners;
+    protected Application $app;
+    protected array $customCreators;
+    protected array $shorteners;
 
     /**
      * Create a new URL shortener manager instance.
@@ -42,11 +42,11 @@ class UrlShortenerManager implements FactoryContract
     /**
      * Dynamically call the default driver instance.
      *
-     * @param  string  $method
-     * @param  array   $parameters
+     * @param string $method
+     * @param array $parameters
      * @return mixed
      */
-    public function __call($method, $parameters)
+    public function __call(string $method, array $parameters)
     {
         return $this->driver()->$method(...$parameters);
     }
@@ -57,7 +57,7 @@ class UrlShortenerManager implements FactoryContract
      * @param array $config
      * @return mixed
      */
-    protected function callCustomCreator(array $config)
+    protected function callCustomCreator(array $config): mixed
     {
         return $this->customCreators[$config['driver']]($this->app, $config);
     }
@@ -69,7 +69,7 @@ class UrlShortenerManager implements FactoryContract
      * @return \LaraCrafts\UrlShortener\Http\BitLyShortener
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    protected function createBitLyDriver(array $config)
+    protected function createBitLyDriver(array $config): BitLyShortener
     {
         return new BitLyShortener(
             $this->app->make(ClientInterface::class),
@@ -85,7 +85,7 @@ class UrlShortenerManager implements FactoryContract
      * @return \LaraCrafts\UrlShortener\Http\FirebaseShortener
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    protected function createFirebaseDriver(array $config)
+    protected function createFirebaseDriver(array $config): FirebaseShortener
     {
         return new FirebaseShortener(
             $this->app->make(ClientInterface::class),
@@ -102,7 +102,7 @@ class UrlShortenerManager implements FactoryContract
      * @return \LaraCrafts\UrlShortener\Http\IsGdShortener
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    protected function createIsGdDriver(array $config)
+    protected function createIsGdDriver(array $config): IsGdShortener
     {
         return new IsGdShortener(
             $this->app->make(ClientInterface::class),
@@ -118,7 +118,7 @@ class UrlShortenerManager implements FactoryContract
      * @return \LaraCrafts\UrlShortener\Http\OuoIoShortener
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    protected function createOuoIoDriver(array $config)
+    protected function createOuoIoDriver(array $config): OuoIoShortener
     {
         return new OuoIoShortener(
             $this->app->make(ClientInterface::class),
@@ -133,7 +133,7 @@ class UrlShortenerManager implements FactoryContract
      * @return \LaraCrafts\UrlShortener\Http\PolrShortener
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    protected function createPolrDriver(array $config)
+    protected function createPolrDriver(array $config): PolrShortener
     {
         return new PolrShortener(
             $this->app->make(ClientInterface::class),
@@ -149,7 +149,7 @@ class UrlShortenerManager implements FactoryContract
      * @return \LaraCrafts\UrlShortener\Http\ShorteStShortener
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    protected function createShorteStDriver(array $config)
+    protected function createShorteStDriver(array $config): ShorteStShortener
     {
         return new ShorteStShortener(
             $this->app->make(ClientInterface::class),
@@ -163,7 +163,7 @@ class UrlShortenerManager implements FactoryContract
      * @return \LaraCrafts\UrlShortener\Http\TinyUrlShortener
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    protected function createTinyUrlDriver()
+    protected function createTinyUrlDriver(): TinyUrlShortener
     {
         return new TinyUrlShortener($this->app->make(ClientInterface::class));
     }
@@ -174,7 +174,7 @@ class UrlShortenerManager implements FactoryContract
      * @param string|null $name
      * @return \LaraCrafts\UrlShortener\Contracts\Shortener
      */
-    public function driver(string $name = null)
+    public function driver(string $name = null): Contracts\Shortener
     {
         return $this->shortener($name);
     }
@@ -186,7 +186,7 @@ class UrlShortenerManager implements FactoryContract
      * @param \Closure $callback
      * @return $this
      */
-    public function extend(string $name, Closure $callback)
+    public function extend(string $name, Closure $callback): static
     {
         $this->customCreators[$name] = $callback->bindTo($this, $this);
 
@@ -198,7 +198,7 @@ class UrlShortenerManager implements FactoryContract
      *
      * @return string
      */
-    public function getDefaultDriver()
+    public function getDefaultDriver(): string
     {
         return $this->app['config']['url-shortener.default'];
     }
@@ -209,7 +209,7 @@ class UrlShortenerManager implements FactoryContract
      * @param string $name
      * @return array|null
      */
-    protected function getShortenerConfig(string $name)
+    protected function getShortenerConfig(string $name): ?array
     {
         return $this->app['config']["url-shortener.shorteners.$name"];
     }
@@ -220,7 +220,7 @@ class UrlShortenerManager implements FactoryContract
      * @param string $name
      * @return \LaraCrafts\UrlShortener\Contracts\Shortener
      */
-    protected function resolve(string $name)
+    protected function resolve(string $name): Contracts\Shortener
     {
         $config = $this->getShortenerConfig($name);
 
@@ -246,7 +246,7 @@ class UrlShortenerManager implements FactoryContract
      * @param string $name
      * @return $this
      */
-    public function setDefaultDriver(string $name)
+    public function setDefaultDriver(string $name): static
     {
         $this->app['config']['url-shortener.default'] = $name;
 
@@ -256,7 +256,7 @@ class UrlShortenerManager implements FactoryContract
     /**
      * {@inheritDoc}
      */
-    public function shortener(string $name = null)
+    public function shortener(string $name = null): Contracts\Shortener
     {
         $name = $name ?: $this->getDefaultDriver();
 

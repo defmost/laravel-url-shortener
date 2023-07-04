@@ -15,7 +15,7 @@ class UrlShortenerServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/url-shortener.php', 'url-shortener');
         $this->publishAssets();
@@ -27,7 +27,7 @@ class UrlShortenerServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function publishAssets()
+    protected function publishAssets(): void
     {
         if (!$this->app->runningInConsole() || Str::contains($this->app->version(), 'Lumen')) {
             return;
@@ -43,7 +43,7 @@ class UrlShortenerServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->alias('url.shortener', UrlShortenerManager::class);
         $this->app->bindIf(ClientInterface::class, Client::class);
@@ -58,7 +58,7 @@ class UrlShortenerServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerMacros()
+    protected function registerMacros(): void
     {
         if (!class_exists(UrlGenerator::class) || !method_exists(UrlGenerator::class, 'macro')) {
             return;

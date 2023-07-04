@@ -6,10 +6,11 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 
 class TinyUrlShortener extends RemoteShortener
 {
-    protected $client;
+    protected ClientInterface $client;
     protected const defaults = [
         'allow_redirects' => false,
         'base_uri' => 'https://tinyurl.com',
@@ -29,7 +30,7 @@ class TinyUrlShortener extends RemoteShortener
     /**
      * {@inheritDoc}
      */
-    public function shortenAsync($url, array $options = [])
+    public function shortenAsync(UriInterface|string $url, array $options = []): \GuzzleHttp\Promise\PromiseInterface
     {
         $options = array_merge(Arr::add(static::defaults, 'query.url', $url), $options);
         $request = new Request('GET', '/api-create.php');
