@@ -10,5 +10,5 @@ interface Factory
      * @param string|null $name
      * @return \LaraCrafts\UrlShortener\Contracts\Shortener
      */
-    public function shortener(string $name = null);
+    public function shortener(string $name = null): Shortener;
 }

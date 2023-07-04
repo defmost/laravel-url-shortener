@@ -3,14 +3,15 @@
 namespace LaraCrafts\UrlShortener\Http;
 
 use GuzzleHttp\ClientInterface;
+use Psr\Http\Message\UriInterface;
 use function GuzzleHttp\json_decode;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 
 class ShorteStShortener extends RemoteShortener
 {
-    protected $client;
-    protected $defaults;
+    protected ClientInterface $client;
+    protected array $defaults;
 
     /**
      * Create a new Shorte.st shortener.
@@ -36,7 +37,7 @@ class ShorteStShortener extends RemoteShortener
     /**
      * {@inheritDoc}
      */
-    public function shortenAsync($url, array $options = [])
+    public function shortenAsync(UriInterface|string $url, array $options = []): \GuzzleHttp\Promise\PromiseInterface
     {
         $options = array_merge_recursive($this->defaults, $options);
         $request = new Request('PUT', '/v1/data/url', [], http_build_query(['urlToShorten' => $url]));

@@ -6,12 +6,13 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 
 class OuoIoShortener extends RemoteShortener
 {
-    protected $client;
-    protected $defaults;
-    protected $token;
+    protected ClientInterface $client;
+    protected array $defaults;
+    protected string $token;
 
     /**
      * Create a new Ouo.io shortener.
@@ -33,7 +34,7 @@ class OuoIoShortener extends RemoteShortener
     /**
      * {@inheritDoc}
      */
-    public function shortenAsync($url, array $options = [])
+    public function shortenAsync(UriInterface|string $url, array $options = []): \GuzzleHttp\Promise\PromiseInterface
     {
         $options = array_merge(Arr::add($this->defaults, 'query.s', $url), $options);
         $request = new Request('GET', "/api/$this->token");

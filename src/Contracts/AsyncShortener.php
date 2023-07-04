@@ -11,5 +11,5 @@ interface AsyncShortener extends Shortener
      * @param array $options
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function shortenAsync($url, array $options = []);
+    public function shortenAsync(\Psr\Http\Message\UriInterface|string $url, array $options = []): \GuzzleHttp\Promise\PromiseInterface;
 }

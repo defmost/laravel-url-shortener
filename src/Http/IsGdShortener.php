@@ -6,11 +6,12 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 
 class IsGdShortener extends RemoteShortener
 {
-    protected $client;
-    protected $defaults;
+    protected ClientInterface $client;
+    protected array $defaults;
 
     /**
      * Create a new Is.gd shortener.
@@ -20,7 +21,7 @@ class IsGdShortener extends RemoteShortener
      * @param bool $statistics
      * @return void
      */
-    public function __construct(ClientInterface $client, $baseUri, bool $statistics)
+    public function __construct(ClientInterface $client, \Psr\Http\Message\UriInterface|string $baseUri, bool $statistics)
     {
         $this->client = $client;
         $this->defaults = [
@@ -36,7 +37,7 @@ class IsGdShortener extends RemoteShortener
     /**
      * {@inheritDoc}
      */
-    public function shortenAsync($url, array $options = [])
+    public function shortenAsync(UriInterface|string $url, array $options = []): \GuzzleHttp\Promise\PromiseInterface
     {
         $options = Arr::add(array_merge_recursive($this->defaults, $options), 'query.url', $url);
         $request = new Request('GET', '/create.php');

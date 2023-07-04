@@ -3,6 +3,7 @@
 namespace LaraCrafts\UrlShortener\Http;
 
 use GuzzleHttp\ClientInterface;
+use Psr\Http\Message\UriInterface;
 use function GuzzleHttp\json_decode;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Arr;
@@ -10,8 +11,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class FirebaseShortener extends RemoteShortener
 {
-    protected $client;
-    protected $defaults;
+    protected ClientInterface $client;
+    protected array $defaults;
 
     /**
      * Create a new Firebase shortener.
@@ -49,7 +50,7 @@ class FirebaseShortener extends RemoteShortener
     /**
      * {@inheritDoc}
      */
-    public function shortenAsync($url, array $options = [])
+    public function shortenAsync(UriInterface|string $url, array $options = []): \GuzzleHttp\Promise\PromiseInterface
     {
         $options = array_merge_recursive(Arr::add($this->defaults, 'json.dynamicLinkInfo.link', $url), $options);
         $request = new Request('POST', '/v1/shortLinks');

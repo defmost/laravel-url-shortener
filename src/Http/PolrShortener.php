@@ -3,6 +3,7 @@
 namespace LaraCrafts\UrlShortener\Http;
 
 use GuzzleHttp\ClientInterface;
+use Psr\Http\Message\UriInterface;
 use function GuzzleHttp\json_decode;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Arr;
@@ -13,12 +14,12 @@ class PolrShortener extends RemoteShortener
     /**
      * @var \GuzzleHttp\ClientInterface
      */
-    protected $client;
+    protected ClientInterface $client;
 
     /**
      * @var array
      */
-    protected $defaults;
+    protected array $defaults;
 
     /**
      * Create a new Polr shortener.
@@ -47,7 +48,7 @@ class PolrShortener extends RemoteShortener
     /**
      * {@inheritDoc}
      */
-    public function shortenAsync($url, array $options = [])
+    public function shortenAsync(UriInterface|string $url, array $options = []): \GuzzleHttp\Promise\PromiseInterface
     {
         $options = array_merge_recursive(Arr::add($this->defaults, 'query.url', $url), $options);
         $request = new Request('GET', '/api/v2/action/shorten');

@@ -11,5 +11,5 @@ interface Shortener
      * @param array $options
      * @return string
      */
-    public function shorten($url, array $options = []);
+    public function shorten(\Psr\Http\Message\UriInterface|string $url, array $options = []): string;
 }
