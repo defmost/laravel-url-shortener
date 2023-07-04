@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.0.0](https://github.com/defmost/laravel-url-shortener/releases/tag/v1.0.0) (2022-07-04)
+- Adding support to Laravel 9+
+
 ## [v0.3.2](https://github.com/LaraCrafts/laravel-url-shortener/releases/tag/v0.3.2) (2019-09-12)
 - Fix shorten function not being accessible from UrlGenerator and UrlShortenerManager
 
